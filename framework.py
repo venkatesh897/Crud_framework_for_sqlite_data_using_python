@@ -43,19 +43,16 @@ for column_name in column_names:
 		max_length_column_name = column_name
 
 def get_no_of_fields():
-
 	count_of_fields = 0
 	for column_name in column_names:
 		count_of_fields = count_of_fields + 1
 	return count_of_fields
 
 def print_pipe():
-
 	count_of_fields = get_no_of_fields()
 	print("-" * (((len(max_length_column_name) + 12) * count_of_fields) + 1) )
 
 def print_column_names():
-
 	print("|", end = "")
 	for column_name in column_names:
 		print(column_name, end ="")
@@ -71,7 +68,6 @@ def column_names_string():
 	return columns_string
 
 def insert_record():
-
 	field_values = []
 	for column_name in column_names:
 		if column_name == 'STATUS':
@@ -100,7 +96,6 @@ def insert_record():
 	connection.commit()
 
 def show_records():
-
 	cursor = connection.execute("SELECT * from %s WHERE STATUS = 'ACTIVE'" %(table))
 	data = cursor.fetchall()
 	print_pipe()
@@ -116,7 +111,6 @@ def show_records():
 	print_pipe()
 
 def show_record():
-
 	user_input_id = int(input("Enter ID: "))
 	cursor = connection.execute("SELECT * from %s WHERE STATUS = 'ACTIVE' AND ID =" %(table) + str(user_input_id))
 	data = cursor.fetchall()
@@ -136,7 +130,6 @@ def show_record():
 		print_pipe()
 
 def delete_record():
-
 	user_input_id =int(input("Enter ID: "))
 	is_record_deleted = connection.execute("UPDATE %s set STATUS = 'INACTIVE' where ID =" %(table) + str(user_input_id)).rowcount
 	if is_record_deleted > 0:
@@ -146,7 +139,6 @@ def delete_record():
 	connection.commit()
 
 def update_record():
-
 	count_of_fields = get_no_of_fields()
 	user_input_id = int(input("Enter ID: "))
 	id = connection.execute("SELECT ID from %s WHERE STATUS = 'ACTIVE'" %(table))
