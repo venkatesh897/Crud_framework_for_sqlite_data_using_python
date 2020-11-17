@@ -9,27 +9,17 @@ tables = []
 
 def get_count_of_tables():
 	count_of_tables = 0
-
 	cursor = connection.cursor()
-
 	cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-
 	tables = cursor.fetchall()
-
 	for table in tables:
 		count_of_tables = count_of_tables + 1
-
 	print(count_of_tables)
 
 def get_tables():
-
-
 	cursor = connection.cursor()
-
 	cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-
 	tables = cursor.fetchall()
-
 	connection.commit()
 	return tables
 
@@ -44,15 +34,11 @@ def show_tables():
 		counter = counter + 1
 
 def select_table():
-
 	try:
 		user_option = int(input("Enter option: "))
-
 	except:
 		print("INVALID INPUT")
-
 	table = tables[user_option - 1][0]
-
 	return table
 
 def get_no_of_fields():
