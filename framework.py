@@ -118,30 +118,22 @@ def show_records():
 def show_record():
 
 	user_input_id = int(input("Enter ID: "))
-	id = connection.execute("SELECT ID from %s WHERE STATUS = 'ACTIVE'" %(table))
-	ids = id.fetchall()
-	is_record_found = False
-	for id in ids:
-		if (id[0]) == user_input_id:
-			is_record_found = True
-			cursor = connection.execute("SELECT * from %s WHERE STATUS = 'ACTIVE' AND ID =" %(table) + str(user_input_id))
-			data = cursor.fetchall()
-			print_pipe()
-			print_column_names()
-			print_pipe()
-			for record in data:
-				print("|", end ="")
-				for counter in range(0,len(record)):
-					print(record[counter], end= "")
-					print(" " * (len(max_length_column_name) - int(len(str(record[counter]))) + 11), end = "")
-					print("|", end = "")
-				print("\t")
-			print_pipe()
-			break
-		else:
-			is_record_found = False
-	if is_record_found == False:
-		print(record_not_found)
+	cursor = connection.execute("SELECT * from %s WHERE STATUS = 'ACTIVE' AND ID =" %(table) + str(user_input_id))
+	data = cursor.fetchall()
+	if not data:
+		print("record not found.")
+	else:
+		print_pipe()
+		print_column_names()
+		print_pipe()
+		for record in data:
+			print("|", end ="")
+			for counter in range(0,len(record)):
+				print(record[counter], end= "")
+				print(" " * (len(max_length_column_name) - int(len(str(record[counter]))) + 11), end = "")
+				print("|", end = "")
+			print("\t")
+		print_pipe()
 
 def delete_record():
 
