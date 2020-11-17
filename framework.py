@@ -2,65 +2,30 @@ import sqlite3
 database = 'big_bazar.db'
 menu_file = "Menu.cfg"
 record_not_found = 'Record not found.'
+table_file = 'table_file.cfg'
 
 connection = sqlite3.connect(database)
 
-tables = []
+try:
+	with open(table_file) as f_table:
+		table = f_table.read()
+	f_table.close()
 
-def get_count_of_tables():
-	count_of_tables = 0
-	cursor = connection.cursor()
-	cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-	tables = cursor.fetchall()
-	for table in tables:
-		count_of_tables = count_of_tables + 1
-	print(count_of_tables)
+except FileNotFoundError:
+	print(file_not_found_message)
 
-def get_tables():
-	cursor = connection.cursor()
-	cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-	tables = cursor.fetchall()
-	connection.commit()
-	return tables
-
-tables = get_tables()
-
-def show_tables():
-
-	counter = 1
-
-	for table in tables:
-		print(str(counter) + "." + str(tables[counter - 1][0]))
-		counter = counter + 1
-
-def select_table():
-	try:
-		user_option = int(input("Enter option: "))
-	except:
-		print("INVALID INPUT")
-	table = tables[user_option - 1][0]
-	return table
-
-def get_no_of_fields():
-	count_of_fields = 0
-	for column_name in column_names:
-		count_of_fields = count_of_fields + 1
-	return count_of_fields
-
-show_tables()
-
-table = select_table()
-print(table)
 
 try:
 	with open(menu_file) as f_menu:
 		menu = f_menu.read()
 	f_menu.close()
+
 except FileNotFoundError:
 	print(file_not_found_message)
 
 try:
 	get_column_names = connection.execute("select * from %s limit 1" %(table))
+
 except sqlite3.OperationalError:
 	print("Table not found.")
 
@@ -77,11 +42,20 @@ for column_name in column_names:
 	if(len(max_length_column_name) < len(column_name)):
 		max_length_column_name = column_name
 
+def get_no_of_fields():
+
+	count_of_fields = 0
+	for column_name in column_names:
+		count_of_fields = count_of_fields + 1
+	return count_of_fields
+
 def print_pipe():
+
 	count_of_fields = get_no_of_fields()
 	print("-" * (((len(max_length_column_name) + 12) * count_of_fields) + 1) )
 
 def get_column_names():
+
 	print("|", end = "")
 	for column_name in column_names:
 		print(column_name, end ="")
@@ -89,12 +63,6 @@ def get_column_names():
 		print("|", end = "")
 	print("\t")
 
-def column_names_string():
-	columns_string = "("
-	for column_name in column_names:
-		columns_string = columns_string +  column_name + ","
-	columns_string = columns_string.rstrip(",") + ")"
-	return columns_string
 
 def insert_record():
 
@@ -119,6 +87,7 @@ def insert_record():
 	connection.commit()
 
 def show_records():
+
 	cursor = connection.execute("SELECT * from %s WHERE STATUS = 'ACTIVE'" %(table))
 	data = cursor.fetchall()
 	print_pipe()
@@ -134,6 +103,7 @@ def show_records():
 	print_pipe()
 
 def show_record():
+
 	user_input_id = int(input("Enter ID: "))
 	id = connection.execute("SELECT ID from %s WHERE STATUS = 'ACTIVE'" %(table))
 	ids = id.fetchall()
@@ -161,12 +131,17 @@ def show_record():
 		print(record_not_found)
 
 def delete_record():
+
 	user_input_id =int(input("Enter ID: "))
 	is_record_deleted = connection.execute("UPDATE %s set STATUS = 'INACTIVE' where ID =" %(table) + str(user_input_id)).rowcount
-	print(is_record_deleted)
+	if is_record_deleted > 0:
+		print("Record deleted successfully.")
+	else:
+		print("Error deleting record.")
 	connection.commit()
 
 def update_record():
+
 	count_of_fields = get_no_of_fields()
 	user_input_id = int(input("Enter ID: "))
 	id = connection.execute("SELECT ID from %s WHERE STATUS = 'ACTIVE'" %(table))
@@ -180,9 +155,12 @@ def update_record():
 			user_input = int(input("Enter option: "))
 			if user_input >= 1 and user_input <= count_of_fields - 2:
 				user_input_data = input("Enter "+ column_names[user_input + 1] + ": ")
-				is_record_updated =  connection.execute("UPDATE %s set %s = '%s' where id = %s" %(table, column_names[user_input + 1], user_input_data, user_input_id))
+				is_record_updated =  connection.execute("UPDATE %s set %s = '%s' where id = %s" %(table, column_names[user_input + 1], user_input_data, user_input_id)).rowcount		
 				connection.commit()
-				print("Record updated successfully.")
+				if is_record_updated > 0:
+					print("Record updated successfully.")
+				else:
+					print("Error updating record.")
 				break
 		else:
 			is_record_found = False
