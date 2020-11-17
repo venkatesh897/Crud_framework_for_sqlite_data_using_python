@@ -54,7 +54,7 @@ def print_pipe():
 	count_of_fields = get_no_of_fields()
 	print("-" * (((len(max_length_column_name) + 12) * count_of_fields) + 1) )
 
-def get_column_names():
+def print_column_names():
 
 	print("|", end = "")
 	for column_name in column_names:
@@ -63,6 +63,12 @@ def get_column_names():
 		print("|", end = "")
 	print("\t")
 
+def column_names_string():
+	columns_string = "("
+	for column_name in column_names:
+		columns_string = columns_string +  column_name + ","
+	columns_string = columns_string.rstrip(",") + ")"
+	return columns_string
 
 def insert_record():
 
@@ -71,6 +77,13 @@ def insert_record():
 		if column_name == 'STATUS':
 			status = 'ACTIVE'
 			field_values.append(status)
+		elif column_name == 'ID':
+			try:
+				field_value = int(input("Enter " + column_name + ": "))
+				field_values.append(field_value)
+			except:
+				print("ID must be a number.")
+				exit()
 		else:
 			field_value = input("Enter " + column_name + ": ")
 			field_values.append(field_value)
@@ -91,7 +104,7 @@ def show_records():
 	cursor = connection.execute("SELECT * from %s WHERE STATUS = 'ACTIVE'" %(table))
 	data = cursor.fetchall()
 	print_pipe()
-	get_column_names()
+	print_column_names()
 	print_pipe()
 	for record in data:
 		print("|", end ="")
@@ -114,7 +127,7 @@ def show_record():
 			cursor = connection.execute("SELECT * from %s WHERE STATUS = 'ACTIVE' AND ID =" %(table) + str(user_input_id))
 			data = cursor.fetchall()
 			print_pipe()
-			get_column_names()
+			print_column_names()
 			print_pipe()
 			for record in data:
 				print("|", end ="")
