@@ -42,7 +42,7 @@ try:
 except sqlite3.OperationalError:
 	print("Table not found.")
 
-column_names = [column_description[0] for column_description in get_column_names.description]
+column_names = [columns_description[0] for columns_description in get_column_names.description]
 
 max_length_column_name = column_names[0]
 for column_name in column_names:
