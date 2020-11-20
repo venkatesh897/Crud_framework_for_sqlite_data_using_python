@@ -76,12 +76,12 @@ def print_column_names():
 		print("|", end = "")
 	print("\t")
 
-def column_names_string():
-	columns_string = "("
+def get_column_names_string():
+	column_names_string = "("
 	for column_name in column_names:
-		columns_string = columns_string +  column_name + ","
-	columns_string = columns_string.rstrip(",") + ")"
-	return columns_string
+		column_names_string = column_names_string +  column_name + ","
+	column_names_string = column_names_string.rstrip(",") + ")"
+	return column_names_string
 
 def insert_record():
 
@@ -102,9 +102,9 @@ def insert_record():
 			field_values.append(field_value)
 	record = tuple(field_values)
 	duple_of_column_names = tuple(column_names)
-	columns_string = column_names_string()
+	column_names_string = get_column_names_string()
 	try:
-		is_record_saved = connection.execute("INSERT INTO " + table + " "+ columns_string + "VALUES" + str(record) ).rowcount
+		is_record_saved = connection.execute("INSERT INTO " + table + " "+ column_names_string + "VALUES" + str(record) ).rowcount
 	except sqlite3.IntegrityError:
 		is_record_saved = 0
 		print("Id already exist")
