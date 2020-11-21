@@ -1,5 +1,5 @@
 import sqlite3
-database = 'big_bazar.db'
+database = 'framework.db'
 menu_file = "Menu.cfg"
 record_not_found = 'Record not found.'
 table_file = 'table_name.cfg'
@@ -88,7 +88,7 @@ def insert_record():
 	field_values = []
 	for column_name in column_names:
 		if column_name == 'STATUS':
-			status = 'ACTIVE'
+			status = 'a'
 			field_values.append(status)
 		elif column_name == 'ID':
 			try:
@@ -114,7 +114,7 @@ def insert_record():
 
 def show_records():
 
-	cursor = connection.execute("SELECT * from %s WHERE STATUS = 'ACTIVE'" %(table))
+	cursor = connection.execute("SELECT * from %s WHERE STATUS = 'a'" %(table))
 	data = cursor.fetchall()
 	print_pipe()
 	print_column_names()
@@ -131,7 +131,7 @@ def show_records():
 def show_record():
 
 	user_input_id = int(input("Enter ID: "))
-	cursor = connection.execute("SELECT * from %s WHERE STATUS = 'ACTIVE' AND ID =" %(table) + str(user_input_id))
+	cursor = connection.execute("SELECT * from %s WHERE STATUS = 'a' AND ID =" %(table) + str(user_input_id))
 	data = cursor.fetchall()
 	if not data:
 		print(promt_messages[0])
@@ -151,7 +151,7 @@ def show_record():
 def delete_record():
 
 	user_input_id =int(input("Enter ID: "))
-	is_record_deleted = connection.execute("UPDATE %s set STATUS = 'INACTIVE' where ID =" %(table) + str(user_input_id)).rowcount
+	is_record_deleted = connection.execute("UPDATE %s set STATUS = 'i' where ID =" %(table) + str(user_input_id)).rowcount
 	if is_record_deleted > 0:
 		print(promt_messages[2])
 	else:
@@ -162,7 +162,7 @@ def update_record():
 
 	count_of_fields = get_no_of_fields()
 	user_input_id = int(input("Enter ID: "))
-	id = connection.execute("SELECT ID from %s WHERE STATUS = 'ACTIVE'" %(table))
+	id = connection.execute("SELECT ID from %s WHERE STATUS = 'a'" %(table))
 	ids = id.fetchall()
 	is_record_found = False
 	for id in ids:
